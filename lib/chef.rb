@@ -7,17 +7,17 @@ require 'word_wrap'
 require_relative 'cookbook'
 
 module Chef
-  @@prompt = TTY::Prompt.new
+  @prompt = TTY::Prompt.new
 
   def self.ask
-    keywords = @@prompt.ask('What would you like to eat today?')
+    keywords = @prompt.ask('What would you like to eat today?')
     Chef.present(keywords)
   end
 
   def self.present(keywords) 
     recipes = Cookbook.search(keywords)
 
-    recipe_name = @@prompt.select("Found #{recipes.length} recipes:", recipes.keys)
+    recipe_name = @prompt.select("Found #{recipes.length} recipes:", recipes.keys)
     recipe = Cookbook.get(recipes[recipe_name])
 
     description, ingredients, steps = recipe.values_at(:description, :ingredients, :steps)
@@ -43,7 +43,7 @@ module Chef
       puts "#{index}) #{step_wraped} \n"
     end
 
-    restart = @@prompt.yes?("Would you like to see more #{keywords} recipes?")
+    restart = @prompt.yes?("Would you like to see more #{keywords} recipes?")
     restart ? self.present(keywords) : self.end()
   end
 
