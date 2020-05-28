@@ -4,6 +4,7 @@ Browse and read Food52 recipes right from the command line.
 
 ## Demo
 [![demo](https://i.imgur.com/D0xXqVg.png)](https://asciinema.org/a/PltjiXiwn8HKoYz7azsFGFjZV)
+[Click for Video](https://asciinema.org/a/PltjiXiwn8HKoYz7azsFGFjZV)
 
 ## MIT License
 
