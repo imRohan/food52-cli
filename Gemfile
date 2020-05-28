@@ -13,3 +13,5 @@ gem "http", "~> 4.4"
 gem "nokogiri", "~> 1.10"
 
 gem "terminal-table", "~> 1.8"
+
+gem "word_wrap", "~> 1.0"

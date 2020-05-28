@@ -47,6 +47,7 @@ GEM
     unf_ext (0.0.7.7)
     unicode-display_width (1.7.0)
     wisper (2.0.1)
+    word_wrap (1.0.0)
 
 PLATFORMS
   ruby
@@ -56,6 +57,7 @@ DEPENDENCIES
   nokogiri (~> 1.10)
   terminal-table (~> 1.8)
   tty-prompt (~> 0.21.0)
+  word_wrap (~> 1.0)
 
 BUNDLED WITH
    2.1.4

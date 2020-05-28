@@ -1,10 +1,10 @@
 # External Deps
 require 'tty-prompt'
 require 'terminal-table'
+require 'word_wrap'
 
 # External Files
 require_relative 'cookbook'
-include Cookbook
 
 module Chef
   @@prompt = TTY::Prompt.new
@@ -33,12 +33,14 @@ module Chef
 
     puts "\n"
     puts 'Description'
-    puts description
+    description_wraped = WordWrap.ww(description, 100)
+    puts description_wraped
 
     puts "\n"
     puts 'Steps'
     steps.each.with_index(1) do | step, index |
-      puts "#{index}) #{step} \n"
+      step_wraped = WordWrap.ww(step, 100)
+      puts "#{index}) #{step_wraped} \n"
     end
 
     restart = @@prompt.yes?("Would you like to see more #{keywords} recipes?")
@@ -46,7 +48,7 @@ module Chef
   end
 
   def self.end
-    puts 'Ok Bye'
+    puts 'Bon Appetit!'
   end
 end
 
