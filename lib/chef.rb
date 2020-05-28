@@ -8,6 +8,7 @@ require 'word_wrap'
 # External Files
 require_relative 'cookbook'
 
+# Presents the user with conversation style interface to find recipes
 module Chef
   @prompt = TTY::Prompt.new
 

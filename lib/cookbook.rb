@@ -7,6 +7,7 @@ require 'nokogiri'
 include HTTP
 include Nokogiri
 
+# Searches and fetches recipes from food website, Food52.com
 module Cookbook
   def self.search(keywords)
     keywords_formatted = keywords.strip.gsub(/\s/, '%20')
@@ -22,7 +23,7 @@ module Cookbook
     end
 
     recipes
-  rescue Exception => e
+  rescue StandardError => e
     puts "Failed to search for recipes: #{e}"
   end
 
@@ -45,7 +46,7 @@ module Cookbook
     recipe[:description] = html_document.css('div.recipe__text > div.recipe__notes > p').text.strip
 
     recipe
-  rescue Exception => e
+  rescue StandardError => e
     puts "Failed to fetch recipe: #{e}"
   end
 end
