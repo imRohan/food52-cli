@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
+git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 # gem "rails"
 
-gem "tty-prompt", "~> 0.21.0"
+gem 'tty-prompt', '~> 0.21.0'
 
-gem "http", "~> 4.4"
+gem 'http', '~> 4.4'
 
-gem "nokogiri", "~> 1.10"
+gem 'nokogiri', '~> 1.10'
 
-gem "terminal-table", "~> 1.8"
+gem 'terminal-table', '~> 1.8'
 
-gem "word_wrap", "~> 1.0"
+gem 'word_wrap', '~> 1.0'
