@@ -6,7 +6,7 @@ include HTTP
 include Nokogiri
 
 module Cookbook
-  def search (keyword)
+  def self.search (keyword)
     begin
       recipes = Hash.new()
 
@@ -25,7 +25,7 @@ module Cookbook
     end
   end
 
-  def get (recipe_link)
+  def self.get (recipe_link)
     begin
       recipe = { description: '', ingredients: [], steps: [] }
 
