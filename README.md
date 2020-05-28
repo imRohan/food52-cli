@@ -3,7 +3,7 @@
 Browse and read Food52 recipes right from the command line.
 
 ## Demo
-[![asciicast](https://asciinema.org/a/PltjiXiwn8HKoYz7azsFGFjZV.svg)](https://asciinema.org/a/PltjiXiwn8HKoYz7azsFGFjZV)
+[![demo](https://i.imgur.com/D0xXqVg.png)](https://asciinema.org/a/PltjiXiwn8HKoYz7azsFGFjZV)
 
 ## MIT License
 
