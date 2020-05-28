@@ -27,12 +27,13 @@ module Cookbook
 
   def get (recipe_link)
     begin
-      recipe = { ingredients: [], steps: [] }
+      recipe = { description: '', ingredients: [], steps: [] }
+
       raw_response = HTTP.get("https://food52.com#{recipe_link}").to_s
       html_document = Nokogiri::HTML.parse(raw_response)
 
       html_document.css('div.recipe__list.recipe__list--ingredients > ul > li').each do | ingredient |
-        item = ingredient.text.strip.delete("\n")
+        item = ingredient.text.gsub(/\R+/, ' ').strip()
         recipe[:ingredients].push(item)
       end
 
@@ -40,6 +41,8 @@ module Cookbook
         step = step.text.strip.delete("\n")
         recipe[:steps].push(step)
       end
+
+      recipe[:description] = html_document.css('div.recipe__text > div.recipe__notes > p').text.strip
 
       return recipe
     rescue Exception => error

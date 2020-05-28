@@ -17,12 +17,15 @@ recipe = Cookbook.get(recipe_link)
 
 puts "Ok, here is the recipe"
 
+puts "---Description---"
+puts recipe[:description]
+
 puts "---Ingredents---"
 recipe[:ingredients].each do | ingredient |
   puts ingredient
 end
 
 puts "---Steps---"
-recipe[:steps].each do | step |
-  puts step
+recipe[:steps].each.with_index(1) do | step, index |
+  puts "#{index}) #{step} \n"
 end
