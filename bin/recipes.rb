@@ -9,5 +9,5 @@ include Cookbook
 
 prompt = TTY::Prompt.new
 
-name = prompt.ask('What is your name?')
+name = prompt.ask('What would you like to eat today?')
 Cookbook.search(name)
