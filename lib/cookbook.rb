@@ -6,13 +6,14 @@ include HTTP
 include Nokogiri
 
 module Cookbook
-  def self.search (keyword)
+  def self.search (keywords)
     begin
-      recipes = Hash.new()
+      keywords_formatted = keywords.strip.gsub(/\s/,'%20')
 
-      raw_response = HTTP.get("https://food52.com/recipes/search?q=#{keyword}").to_s
+      raw_response = HTTP.get("https://food52.com/recipes/search?q=#{keywords_formatted}").to_s
       html_document = Nokogiri::HTML.parse(raw_response)
 
+      recipes = Hash.new()
       html_document.css('div.card__details h3 a:first-child').each do | recipe |
         title = recipe['title']
         link = recipe['href']
