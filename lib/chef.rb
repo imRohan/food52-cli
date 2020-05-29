@@ -36,11 +36,15 @@ module Chef
 
     puts "\n"
     puts 'Description'
+    puts "\n"
+
     description_wraped = WordWrap.ww(description, 100)
     puts description_wraped
 
     puts "\n"
     puts 'Steps'
+    puts "\n"
+
     steps.each.with_index(1) do |step, index|
       step_wraped = WordWrap.ww(step, 100)
       puts "#{index}) #{step_wraped} \n"
