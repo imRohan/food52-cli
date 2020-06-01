@@ -22,13 +22,13 @@ module Cookbook
     puts "Failed to search for recipes: #{e}"
   end
 
-  def self.search_by_ingredient(ingredient_link)
-    raw_response = HTTP.get("#{@base_url}#{ingredient_link}").to_s
+  def self.search_by_link(link)
+    raw_response = HTTP.get("#{@base_url}#{link}").to_s
 
     recipes = Cookbook.parse_recipes(raw_response)
     recipes
   rescue StandardError => e
-    puts "Failed to search for recipes by ingredient: #{e}"
+    puts "Failed to search for recipes by link #{link}: #{e}"
   end
 
   def self.parse_recipes(raw_html)
@@ -77,5 +77,21 @@ module Cookbook
     ingredients
   rescue StandardError => e
     puts "Failed to fetch ingredients: #{e}"
+  end
+
+  def self.cuisines
+    raw_response = HTTP.get("#{@base_url}/recipes/cuisine/all").to_s
+    html_document = Nokogiri::HTML.parse(raw_response)
+
+    cuisines = {}
+    html_document.css('div.recipe-tags__heading.content__container > ul > li > a').each do |ingredient|
+      title = ingredient.text
+      link = ingredient['href']
+      cuisines.store(title, link)
+    end
+
+    cuisines
+  rescue StandardError => e
+    puts "Failed to fetch cuisines: #{e}"
   end
 end

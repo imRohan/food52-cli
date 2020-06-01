@@ -10,23 +10,27 @@ require_relative 'cookbook'
 
 # Presents the user with conversation style interface to find recipes
 module Chef
-  @options = ['Search via keywords', 'By main ingredient'] 
   @prompt = TTY::Prompt.new
 
+  INITIAL_OPTIONS = ['Keywords', 'Main Ingredient', 'Cuisine'] 
+  OPTIONS_PER_PAGE = 30
+
   def self.init
-    option = @prompt.select('How would you like to search for recipes?', @options)
+    option = @prompt.select('How would you like to search for recipes?', INITIAL_OPTIONS)
 
     parse_selection(option)
   end
 
   def self.parse_selection(option)
-    keywords, ingredient = @options
+    keywords, ingredient, cuisine = INITIAL_OPTIONS
 
     case option
     when keywords
       ask_for_keywords
     when ingredient
       show_ingredients
+    when cuisine
+      show_cuisines
     else
       raise "Received invalid option: #{option}"
     end
@@ -41,8 +45,14 @@ module Chef
 
   def self.show_ingredients
     ingredients = Cookbook.ingredients
-    ingredient_name = @prompt.select('Select main ingredient', ingredients.keys)
+    ingredient_name = @prompt.select('Select main ingredient', ingredients.keys, per_page: OPTIONS_PER_PAGE)
     find_recipe_by_ingredient(ingredients[ingredient_name])
+  end
+
+  def self.show_cuisines
+    cuisines = Cookbook.cuisines
+    cuisine_name = @prompt.select('Select a cuisine', cuisines.keys, per_page: OPTIONS_PER_PAGE)
+    find_recipe_by_cuisine(cuisines[cuisine_name])
   end
 
   def self.find_recipe_by_keywords(keywords)
@@ -51,12 +61,17 @@ module Chef
   end
 
   def self.find_recipe_by_ingredient(ingredient_link)
-    recipes = Cookbook.search_by_ingredient(ingredient_link)
+    recipes = Cookbook.search_by_link(ingredient_link)
+    present_recipes(recipes)
+  end
+
+  def self.find_recipe_by_cuisine(cuisine_link)
+    recipes = Cookbook.search_by_link(cuisine_link)
     present_recipes(recipes)
   end
 
   def self.present_recipes(recipes)
-    recipe_name = @prompt.select("Found #{recipes.length} recipes:", recipes.keys)
+    recipe_name = @prompt.select('Select a recipe to view', recipes.keys, per_page: OPTIONS_PER_PAGE)
     recipe = Cookbook.show_recipe(recipes[recipe_name])
 
     description, ingredients, steps = recipe.values_at(:description, :ingredients, :steps)
@@ -88,6 +103,8 @@ module Chef
 
     restart = @prompt.yes?('Would you like to keep looking?')
     restart ? init : self.end
+  rescue StandardError => e
+    puts "Failed to render recipe: #{e}"
   end
 
   def self.end
