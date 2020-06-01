@@ -2,6 +2,13 @@
 
 Browse and read Food52 recipes right from the command line.
 
+## Run Locally
+
+I've yet to publish this gem, so for the time being, please clone the repo and run:
+
+- `bundle install`
+- `ruby bin/food52-cli`
+
 ## Demo
 [![demo](https://i.imgur.com/D0xXqVg.png)](https://asciinema.org/a/PltjiXiwn8HKoYz7azsFGFjZV)
 [Click for Video](https://asciinema.org/a/PltjiXiwn8HKoYz7azsFGFjZV)
