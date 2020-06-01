@@ -12,7 +12,7 @@ module Cookbook
   def self.search(keywords)
     keywords_formatted = keywords.strip.gsub(/\s/, '%20')
 
-    raw_response = HTTP.get("https://food52.com/recipes/search?q=#{keywords_formatted}").to_s
+    raw_response = HTTP.get("https://food52.com/recipes/search?q=#{keywords_formatted}&o=popular").to_s
     html_document = Nokogiri::HTML.parse(raw_response)
 
     recipes = {}

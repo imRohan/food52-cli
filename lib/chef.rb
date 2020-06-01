@@ -34,16 +34,16 @@ module Chef
     end
     puts recipe_table
 
-    puts "\n"
+    puts
     puts 'Description'
-    puts "\n"
+    puts
 
     description_wraped = WordWrap.ww(description, 100)
     puts description_wraped
 
-    puts "\n"
+    puts
     puts 'Steps'
-    puts "\n"
+    puts
 
     steps.each.with_index(1) do |step, index|
       step_wraped = WordWrap.ww(step, 100)
