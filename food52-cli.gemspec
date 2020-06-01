@@ -1,4 +1,4 @@
-Gem::Specification.new do |s|  
+Gem::Specification.new do |s|
   s.name = 'food52-cli'
   s.version = '1.0.0'
   s.authors = ['Rohan Likhite']

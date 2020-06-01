@@ -4,13 +4,10 @@
 $: << File.join(File.dirname(__FILE__), "/../lib")
 require 'chef'
 
-
 begin
-  Chef.ask
-rescue SystemExit, Interrupt => e
+  Chef.init
+rescue SystemExit, Interrupt
   puts
   puts 'Bon Appetit!'
   puts
 end
-
-
