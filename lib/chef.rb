@@ -43,46 +43,30 @@ module Chef
   def self.ask_for_keywords
     keywords = @prompt.ask('What would you like to eat today?')
 
-    find_recipe_by_keywords(keywords)
+    recipes = Cookbook.search_by_keywords(keywords)
+    present_recipes(recipes)
   end
 
   def self.show_ingredients
     ingredients = Cookbook.ingredients
     ingredient_name = @prompt.select('Select main ingredient', ingredients.keys, per_page: OPTIONS_PER_PAGE)
 
-    find_recipe_by_ingredient(ingredients[ingredient_name])
+    recipes = Cookbook.search_by_link(ingredients[ingredient_name])
+    present_recipes(recipes)
   end
 
   def self.show_cuisines
     cuisines = Cookbook.cuisines
     cuisine_name = @prompt.select('Select a cuisine', cuisines.keys, per_page: OPTIONS_PER_PAGE)
 
-    find_recipe_by_cuisine(cuisines[cuisine_name])
+    recipes = Cookbook.search_by_link(cuisines[cuisine_name])
+    present_recipes(recipes)
   end
 
   def self.show_meal_types
-    meals = %w[breakfast brunch lunch dinner snacks]
+    meals = %w[Breakfast Brunch Lunch Dinner Snacks]
     meal = @prompt.select('Select a meal', meals, per_page: OPTIONS_PER_PAGE)
 
-    find_recipe_by_meal_type(meal)
-  end
-
-  def self.find_recipe_by_keywords(keywords)
-    recipes = Cookbook.search_by_keywords(keywords)
-    present_recipes(recipes)
-  end
-
-  def self.find_recipe_by_ingredient(ingredient_link)
-    recipes = Cookbook.search_by_link(ingredient_link)
-    present_recipes(recipes)
-  end
-
-  def self.find_recipe_by_cuisine(cuisine_link)
-    recipes = Cookbook.search_by_link(cuisine_link)
-    present_recipes(recipes)
-  end
-
-  def self.find_recipe_by_meal_type(meal)
     recipes = Cookbook.search_by_meal_type(meal)
     present_recipes(recipes)
   end
@@ -93,13 +77,7 @@ module Chef
 
     description, ingredients, steps = recipe.values_at(:description, :ingredients, :steps)
 
-    recipe_table = Terminal::Table.new do |table|
-      table.title = recipe_name
-      table.add_row [{ value: "Ingredients - #{ingredients.length} total", alignment: :center }]
-      ingredients.each do |ingredient|
-        table.add_row [ingredient]
-      end
-    end
+    recipe_table = generate_ingredient_table(recipe_name, ingredients)
     puts recipe_table
 
     puts
@@ -122,6 +100,18 @@ module Chef
     restart ? init : self.end
   rescue StandardError => e
     puts "Failed to render recipe: #{e}"
+  end
+
+  def self.generate_ingredient_table(recipe_name, ingredients)
+    ingredient_table = Terminal::Table.new do |table|
+      table.title = recipe_name
+      table.add_row [{ value: "Ingredients - #{ingredients.length} total", alignment: :center }]
+      ingredients.each do |ingredient|
+        table.add_row [ingredient]
+      end
+    end
+
+    ingredient_table
   end
 
   def self.end

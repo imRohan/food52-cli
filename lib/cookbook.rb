@@ -32,7 +32,7 @@ module Cookbook
   end
 
   def self.search_by_meal_type(meal)
-    raw_response = HTTP.get("#{@base_url}/recipes/#{meal}").to_s
+    raw_response = HTTP.get("#{@base_url}/recipes/#{meal.downcase}").to_s
 
     recipes = Cookbook.parse_recipes(raw_response)
     recipes
