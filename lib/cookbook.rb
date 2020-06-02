@@ -31,6 +31,15 @@ module Cookbook
     puts "Failed to search for recipes by link #{link}: #{e}"
   end
 
+  def self.search_by_meal_type(meal)
+    raw_response = HTTP.get("#{@base_url}/recipes/#{meal}").to_s
+
+    recipes = Cookbook.parse_recipes(raw_response)
+    recipes
+  rescue StandardError => e
+    puts "Failed to search for recipes by meal #{meal}: #{e}"
+  end
+
   def self.parse_recipes(raw_html)
     html_document = Nokogiri::HTML.parse(raw_html)
 
@@ -65,15 +74,8 @@ module Cookbook
 
   def self.ingredients
     raw_response = HTTP.get("#{@base_url}/recipes/ingredient/all").to_s
-    html_document = Nokogiri::HTML.parse(raw_response)
 
-    ingredients = {}
-    html_document.css('div.recipe-tags__heading.content__container > ul > li > a').each do |ingredient|
-      title = ingredient.text
-      link = ingredient['href']
-      ingredients.store(title, link)
-    end
-
+    ingredients = parse_tags(raw_response)
     ingredients
   rescue StandardError => e
     puts "Failed to fetch ingredients: #{e}"
@@ -81,17 +83,23 @@ module Cookbook
 
   def self.cuisines
     raw_response = HTTP.get("#{@base_url}/recipes/cuisine/all").to_s
-    html_document = Nokogiri::HTML.parse(raw_response)
 
-    cuisines = {}
-    html_document.css('div.recipe-tags__heading.content__container > ul > li > a').each do |ingredient|
-      title = ingredient.text
-      link = ingredient['href']
-      cuisines.store(title, link)
-    end
-
+    cuisines = parse_tags(raw_response)
     cuisines
   rescue StandardError => e
     puts "Failed to fetch cuisines: #{e}"
+  end
+
+  def self.parse_tags(raw_response)
+    html_document = Nokogiri::HTML.parse(raw_response)
+
+    tags = {}
+    html_document.css('div.recipe-tags__heading.content__container > ul > li > a').each do |tag|
+      title = tag.text
+      link = tag['href']
+      tags.store(title, link)
+    end
+
+    tags
   end
 end
