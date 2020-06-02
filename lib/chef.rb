@@ -12,7 +12,7 @@ require_relative 'cookbook'
 module Chef
   @prompt = TTY::Prompt.new
 
-  INITIAL_OPTIONS = ['Keywords', 'Main Ingredient', 'Cuisine', 'Meal']
+  INITIAL_OPTIONS = %w[Keywords Ingredients Cuisine Meal].freeze
   OPTIONS_PER_PAGE = 30
 
   def self.init
@@ -26,49 +26,57 @@ module Chef
 
     case option
     when keywords
-      ask_for_keywords
+      ask_keywords
     when ingredient
-      show_ingredients
+      ask_ingredients
     when cuisine
-      show_cuisines
+      ask_cuisines
     when meal
-      show_meal_types
+      ask_meal_types
     else
       raise "Received invalid option: #{option}"
     end
   rescue StandardError => e
-    puts "Failed to receive a proper response: #{e}"
+    handle_errors(e)
   end
 
-  def self.ask_for_keywords
+  def self.ask_keywords
     keywords = @prompt.ask('What would you like to eat today?')
 
     recipes = Cookbook.search_by_keywords(keywords)
     present_recipes(recipes)
+  rescue StandardError => e
+    handle_errors(e)
   end
 
-  def self.show_ingredients
+  def self.ask_ingredients
     ingredients = Cookbook.ingredients
-    ingredient_name = @prompt.select('Select main ingredient', ingredients.keys, per_page: OPTIONS_PER_PAGE)
+    ingredients_selected = @prompt.multi_select('Select ingredients', ingredients.keys, per_page: OPTIONS_PER_PAGE)
 
-    recipes = Cookbook.search_by_link(ingredients[ingredient_name])
+    recipes = Cookbook.search_by_ingredients(ingredients_selected)
     present_recipes(recipes)
+  rescue StandardError => e
+    handle_errors(e)
   end
 
-  def self.show_cuisines
+  def self.ask_cuisines
     cuisines = Cookbook.cuisines
     cuisine_name = @prompt.select('Select a cuisine', cuisines.keys, per_page: OPTIONS_PER_PAGE)
 
     recipes = Cookbook.search_by_link(cuisines[cuisine_name])
     present_recipes(recipes)
+  rescue StandardError => e
+    handle_errors(e)
   end
 
-  def self.show_meal_types
+  def self.ask_meal_types
     meals = %w[Breakfast Brunch Lunch Dinner Snacks]
     meal = @prompt.select('Select a meal', meals, per_page: OPTIONS_PER_PAGE)
 
     recipes = Cookbook.search_by_meal_type(meal)
     present_recipes(recipes)
+  rescue StandardError => e
+    handle_errors(e)
   end
 
   def self.present_recipes(recipes)
@@ -96,10 +104,9 @@ module Chef
       puts "#{index}) #{step_wraped} \n"
     end
 
-    restart = @prompt.yes?('Would you like to keep looking?')
-    restart ? init : self.end
+    askToRestart
   rescue StandardError => e
-    puts "Failed to render recipe: #{e}"
+    handle_errors(e)
   end
 
   def self.generate_ingredient_table(recipe_name, ingredients)
@@ -114,7 +121,13 @@ module Chef
     ingredient_table
   end
 
-  def self.end
-    puts 'Bon Appetit!'
+  def self.handle_errors(error)
+    puts "Failed to find recipe: #{error}"
+    ask_to_restart
+  end
+
+  def self.ask_to_restart
+    restart = @prompt.yes?('Search for another recipe?')
+    restart ? init : exit
   end
 end

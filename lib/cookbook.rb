@@ -16,28 +16,33 @@ module Cookbook
 
     raw_response = HTTP.get("#{@base_url}/recipes/search?q=#{keywords_formatted}&o=popular").to_s
 
-    recipes = Cookbook.parse_recipes(raw_response)
+    recipes = parse_recipes(raw_response)
     recipes
-  rescue StandardError => e
-    puts "Failed to search for recipes: #{e}"
+  end
+
+  def self.search_by_ingredients(ingredients)
+    main, *rest = ingredients
+    main_ingredient = main.downcase
+    rest_ingredients = rest.join(',').downcase
+
+    raw_response = HTTP.get("#{@base_url}/recipes/search?q=#{main_ingredient}&tag=#{rest_ingredients}&o=popular").to_s
+
+    recipes = parse_recipes(raw_response)
+    recipes
   end
 
   def self.search_by_link(link)
     raw_response = HTTP.get("#{@base_url}#{link}").to_s
 
-    recipes = Cookbook.parse_recipes(raw_response)
+    recipes = parse_recipes(raw_response)
     recipes
-  rescue StandardError => e
-    puts "Failed to search for recipes by link #{link}: #{e}"
   end
 
   def self.search_by_meal_type(meal)
     raw_response = HTTP.get("#{@base_url}/recipes/#{meal.downcase}").to_s
 
-    recipes = Cookbook.parse_recipes(raw_response)
+    recipes = parse_recipes(raw_response)
     recipes
-  rescue StandardError => e
-    puts "Failed to search for recipes by meal #{meal}: #{e}"
   end
 
   def self.parse_recipes(raw_html)
@@ -49,6 +54,8 @@ module Cookbook
       link = recipe['href']
       recipes.store(title, link)
     end
+
+    raise 'No recipes found ' if recipes.empty?
 
     recipes
   end
@@ -69,7 +76,7 @@ module Cookbook
 
     { description: description, ingredients: ingredients, steps: steps }
   rescue StandardError => e
-    puts "Failed to fetch recipe: #{e}"
+    raise "Failed to fetch recipe: #{e}"
   end
 
   def self.ingredients
@@ -78,7 +85,7 @@ module Cookbook
     ingredients = parse_tags(raw_response)
     ingredients
   rescue StandardError => e
-    puts "Failed to fetch ingredients: #{e}"
+    raise "Failed to fetch ingredients: #{e}"
   end
 
   def self.cuisines
@@ -87,7 +94,7 @@ module Cookbook
     cuisines = parse_tags(raw_response)
     cuisines
   rescue StandardError => e
-    puts "Failed to fetch cuisines: #{e}"
+    raise "Failed to fetch cuisines: #{e}"
   end
 
   def self.parse_tags(raw_response)
