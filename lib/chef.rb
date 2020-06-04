@@ -104,7 +104,7 @@ module Chef
       puts "#{index}) #{step_wraped} \n"
     end
 
-    askToRestart
+    ask_to_restart
   rescue StandardError => e
     handle_errors(e)
   end
