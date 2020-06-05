@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 $LOAD_PATH << File.join(File.dirname(__FILE__), '/../lib')
-require 'chef'
+require 'food52-cli'
 
 begin
   Chef.init
